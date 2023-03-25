@@ -1,9 +1,6 @@
 package COMP90015.unimelb.edu;
 
-import COMP90015.unimelb.edu.Request.Request;
-import COMP90015.unimelb.edu.Request.RequestType;
-import COMP90015.unimelb.edu.Response.Response;
-import COMP90015.unimelb.edu.Response.ResponseStatus;
+import COMP90015.unimelb.edu.model.Item;
 
 import java.io.*;
 import java.net.ServerSocket;

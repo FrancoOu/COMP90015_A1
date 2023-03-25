@@ -1,6 +1,6 @@
 package COMP90015.unimelb.edu.Request;
 
-import COMP90015.unimelb.edu.Item;
+import COMP90015.unimelb.edu.model.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Request {

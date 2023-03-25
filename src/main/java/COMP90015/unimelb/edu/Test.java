@@ -1,5 +1,6 @@
 package COMP90015.unimelb.edu;
 
+import COMP90015.unimelb.edu.model.Item;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package COMP90015.unimelb.edu;
+package COMP90015.unimelb.edu.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
