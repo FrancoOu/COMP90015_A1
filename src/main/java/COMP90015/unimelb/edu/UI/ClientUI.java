@@ -46,9 +46,7 @@ public class ClientUI extends JFrame {
 
         // Display the JFrame
         setVisible(true);
-//        String word = "king";
-//        wordTextField.setText(word);
-//        meaningTextField.setText(Dictionary.searchForMeaning(word));
+
     }
 
     public String getWordInputText(){

@@ -50,41 +50,18 @@ public class TCPInteractiveServer {
 //                System.out.println("Local Port: " +
 //                        clientSocket.getLocalPort());
                 //Get the input/output streams for reading/writing data from/to the socket
-                BufferedReader in = new BufferedReader(new
-                        InputStreamReader(clientSocket.getInputStream()));
-                BufferedWriter out = new BufferedWriter(new
-                        OutputStreamWriter(clientSocket.getOutputStream()));
+
+
+
+                Dictionary dictionary = new Dictionary(clientSocket);
+                dictionary.start();
                 //Read the message from the client and reply
                 //Notice that no other connection can be accepted and processed until the last line of
                 //code of this loop is executed, incoming connections have to wait until the current
                 //one is processed unless...we use threads!
-                String clientMsg = null;
                 try
                 {
-                    while((clientMsg = in.readLine()) != null) {
 
-                        Request clientRequest = Util.mapper.readValue(clientMsg, Request.class);
-                        String responseStr = null;
-                        switch (clientRequest.getRequestType()) {
-                            case SEARCH:
-                                String meaning = Dictionary.searchForMeaning(clientRequest.getItem().getWord());
-                                Response serverResponse = new Response(meaning, ResponseStatus.SUCCESS);
-                                responseStr = Util.mapper.writeValueAsString(serverResponse);
-                                break;
-                            case ADD:
-                                Item itemToAdd = clientRequest.getItem();
-                                Dictionary.addWord(itemToAdd.getWord(), itemToAdd.getMeaning());
-                                serverResponse = new Response("word added", ResponseStatus.SUCCESS);
-                                responseStr = Util.mapper.writeValueAsString(serverResponse);
-
-                        }
-
-                        System.out.println("Response sent " + responseStr);
-
-                        out.write(responseStr + "\n");
-                        out.flush();
-
-                    }
 
                     FileWriter writer = new FileWriter("dictionary.json");
                     String dictionaryJSON = Util.mapper.writeValueAsString(Dictionary.items);
@@ -100,8 +77,7 @@ public class TCPInteractiveServer {
                 {
                     System.out.println("closed...");
                 }
-// close the client connection
-                clientSocket.close();
+
             }
         }
         catch (SocketException ex)

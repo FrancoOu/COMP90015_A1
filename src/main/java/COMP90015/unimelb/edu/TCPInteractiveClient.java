@@ -6,6 +6,8 @@ import COMP90015.unimelb.edu.Response.Response;
 import COMP90015.unimelb.edu.UI.ClientUI;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -46,6 +48,18 @@ public class TCPInteractiveClient {
                 sendRequest(out, request);
             }));
 
+            Socket finalSocket = socket;
+            clientUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    try {
+                        finalSocket.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
             while (!socket.isClosed()) {
 //                System.out.println(clientUI.isShowing());
                 String serverResponseStr = null;
@@ -53,7 +67,7 @@ public class TCPInteractiveClient {
 
                     System.out.println(serverResponseStr);
                     Response serverResponse = Util.mapper.readValue(serverResponseStr, Response.class);
-                    clientUI.getMeaningTextField().setText(serverResponse.getMessage());
+//                    clientUI.getMeaningTextField().setText(serverResponse.getMessage());
                 }
             }
         } catch (UnknownHostException e) {
@@ -70,6 +84,7 @@ public class TCPInteractiveClient {
                 }
             }
         }
+
     }
 
     private static void sendRequest(BufferedWriter out, Request request) {
