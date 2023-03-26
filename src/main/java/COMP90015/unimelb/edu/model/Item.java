@@ -2,7 +2,7 @@ package COMP90015.unimelb.edu.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
- *
+ * Object to store the information of a dictionary item
  * @author Gaoyuan Ou(1301025)
  */
 
@@ -11,12 +11,12 @@ public class Item {
     private String word;
     private String meaning;
 
-    Item(@JsonProperty("word") String word, @JsonProperty("meaning") String meaning){
+    public Item(@JsonProperty("word") String word, @JsonProperty("meaning") String meaning){
         this.word = word;
         this.meaning = meaning;
     }
 
-    Item(String word){
+    public Item(String word){
         this.word = word;
 
     }

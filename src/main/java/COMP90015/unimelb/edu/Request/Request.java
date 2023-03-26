@@ -3,6 +3,10 @@ package COMP90015.unimelb.edu.Request;
 import COMP90015.unimelb.edu.model.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ *
+ * @author Gaoyuan Ou(1301025)
+ */
 public class Request {
     private RequestType requestType;
     private Item item;

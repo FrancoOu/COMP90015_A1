@@ -50,7 +50,6 @@ public class ClientUI extends JFrame {
     }
 
     public String getWordInputText(){
-
         return wordTextField.getText();
     }
 
