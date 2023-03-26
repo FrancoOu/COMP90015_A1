@@ -1,17 +1,33 @@
 package COMP90015.unimelb.edu.UI;
 
+import COMP90015.unimelb.edu.Request.Request;
+import COMP90015.unimelb.edu.Request.RequestType;
+import COMP90015.unimelb.edu.Response.Response;
+import COMP90015.unimelb.edu.Util;
+import COMP90015.unimelb.edu.model.Item;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 /**
- *
  * @author Gaoyuan Ou(1301025)
  */
 public class ClientUI extends JFrame {
     private JTextField wordTextField, meaningTextField;
     private JButton searchButton, addButton, button3;
+    private Socket socket;
+    BufferedReader in;
+    BufferedWriter out;
 
-    public ClientUI() {
+    public ClientUI(Socket socket) {
+
+        this.socket = socket;
         // Set up the JFrame
         setTitle("Dictionary");
         setSize(400, 200);
@@ -47,9 +63,43 @@ public class ClientUI extends JFrame {
         // Display the JFrame
         setVisible(true);
 
+
+        try {
+            // Get the input/output streams for reading/writing data from/to the socket
+            in = new BufferedReader(new
+                    InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            out = new BufferedWriter(new
+                    OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //add an event listener on search button
+        searchButton.addActionListener((e -> {
+            Request request = new Request(new Item(getWordInputText()));
+            sendRequest(out, request);
+        }));
+
+        //add an event listener on add button
+        addButton.addActionListener((e -> {
+            Request request = new Request(RequestType.ADD, new Item(getWordInputText(), getMeaningTextField().getText()));
+            sendRequest(out, request);
+        }));
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
     }
 
-    public String getWordInputText(){
+    public String getWordInputText() {
         return wordTextField.getText();
     }
 
@@ -65,5 +115,37 @@ public class ClientUI extends JFrame {
         return addButton;
     }
 
+    public void run() {
+        try {
+
+            while (!socket.isClosed()) {
+//                System.out.println(clientUI.isShowing());
+                String serverResponseStr = null;
+                if ((serverResponseStr = in.readLine()) != null) {
+
+                    System.out.println(serverResponseStr);
+                    Response serverResponse = Util.mapper.readValue(serverResponseStr, Response.class);
+//                    clientUI.getMeaningTextField().setText(serverResponse.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sendRequest(BufferedWriter out, Request request) {
+        String requestStr = null;
+        try {
+            requestStr = Util.mapper.writeValueAsString(request);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            out.write(requestStr + "\n");
+            out.flush();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
 }

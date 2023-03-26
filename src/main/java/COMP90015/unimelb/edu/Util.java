@@ -8,6 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public final class Util {
 
-    static ObjectMapper mapper = new ObjectMapper();
+    public static ObjectMapper mapper = new ObjectMapper();
 
 }
