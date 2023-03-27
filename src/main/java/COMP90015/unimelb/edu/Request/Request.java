@@ -17,11 +17,6 @@ public class Request {
         this.item = item;
     }
 
-    public Request(Item item){
-        this.requestType = RequestType.SEARCH;
-        this.item = item;
-
-    }
 
     public RequestType getRequestType() {
         return requestType;

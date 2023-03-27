@@ -91,7 +91,7 @@ public class Dictionary extends Thread {
         String message;
         ResponseStatus responseStatus;
         try {
-            message = items.stream()
+            message = "The meaning of "+ word + ": "+ items.stream()
                     .filter(w -> w.getWord().equalsIgnoreCase(word)).
                     findFirst().get().getMeaning();
             responseStatus = ResponseStatus.SUCCESS;
