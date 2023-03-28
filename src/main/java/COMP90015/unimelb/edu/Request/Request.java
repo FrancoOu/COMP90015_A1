@@ -4,7 +4,6 @@ import COMP90015.unimelb.edu.model.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- *
  * @author Gaoyuan Ou(1301025)
  */
 public class Request {
@@ -12,7 +11,7 @@ public class Request {
     private Item item;
 
 
-    public Request(@JsonProperty("requestType") RequestType requestType, @JsonProperty("item") Item item){
+    public Request(@JsonProperty("requestType") RequestType requestType, @JsonProperty("item") Item item) {
         this.requestType = requestType;
         this.item = item;
     }

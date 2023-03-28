@@ -131,7 +131,7 @@ class NewDictionary {
         map.put(word, meaning);
     }
 
-    public boolean delete(String word){
+    public boolean delete(String word) {
 
         return false;
     }

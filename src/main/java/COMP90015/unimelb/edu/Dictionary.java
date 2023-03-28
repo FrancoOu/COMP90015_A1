@@ -53,6 +53,15 @@ public class Dictionary extends Thread {
                             responseStr = Util.mapper.writeValueAsString(serverResponse);
                             System.out.println("this is Add" + this.getId());
                             break;
+                        case REMOVE:
+                            Item itemToDelete = clientRequest.getItem();
+                            serverResponse = removeWord(itemToDelete.getWord());
+                            responseStr = Util.mapper.writeValueAsString(serverResponse);
+                            break;
+                        case UPDATE:
+                            Item itemToUpdate = clientRequest.getItem();
+                            serverResponse = updateWord(itemToUpdate.getWord(), itemToUpdate.getMeaning());
+                            responseStr = Util.mapper.writeValueAsString(serverResponse);
 
                     }
 
@@ -91,7 +100,7 @@ public class Dictionary extends Thread {
         String message;
         ResponseStatus responseStatus;
         try {
-            message = "The meaning of "+ word + ": "+ items.stream()
+            message = "The meaning of " + word + ": " + items.stream()
                     .filter(w -> w.getWord().equalsIgnoreCase(word)).
                     findFirst().get().getMeaning();
             responseStatus = ResponseStatus.SUCCESS;
@@ -105,13 +114,39 @@ public class Dictionary extends Thread {
 
     }
 
-    public void removeWord() {
+    synchronized public Response removeWord(String word) {
+        String message;
+        ResponseStatus responseStatus;
+        if (!wordExist(new Item(word))) {
+            System.out.println("no word to remove");
+            message = "no such word";
+            responseStatus = ResponseStatus.NOTFOUND;
+        } else {
+            items.removeIf(item -> item.getWord().equalsIgnoreCase(word));
+            message = "word removed!";
+            responseStatus = ResponseStatus.SUCCESS;
+            saveDictionary();
+
+        }
+        return new Response(message, responseStatus);
 
     }
 
-    public Boolean updateWord(String word, String meaning) {
-
-        return true;
+    synchronized public Response updateWord(String word, String meaning) {
+        String message;
+        ResponseStatus responseStatus;
+        if (wordExist(new Item(word))) {
+            Item itemToUpdate = items.stream().filter((item -> item.getWord().equalsIgnoreCase(word))).findFirst().get();
+            itemToUpdate.setMeaning(meaning);
+            saveDictionary();
+            message = "update successful";
+            responseStatus = ResponseStatus.SUCCESS;
+            saveDictionary();
+        } else {
+            message = "no such word";
+            responseStatus = ResponseStatus.NOTFOUND;
+        }
+        return new Response(message, responseStatus);
     }
 
     public Boolean wordExist(Item item) {

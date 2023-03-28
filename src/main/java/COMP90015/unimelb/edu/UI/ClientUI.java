@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
@@ -185,7 +184,7 @@ public class ClientUI extends JFrame {
 
         // Add listener on search button
         searchButton.addActionListener(e -> {
-            Request request = new Request(RequestType.SEARCH ,new Item(searchField.getText()));
+            Request request = new Request(RequestType.SEARCH, new Item(searchField.getText()));
             sendRequest(out, request);
         });
 
@@ -211,11 +210,19 @@ public class ClientUI extends JFrame {
 
         // Create update button and listener
         updateButton = new JButton("Update");
-        updateButton.addActionListener(e->{
+        updateButton.addActionListener(e -> {
+            Request request = new Request(RequestType.UPDATE, new Item(wordField.getText(), meaningField.getText()));
+            sendRequest(out, request);
 
         });
 
+        // Create update button and listener
         deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(e -> {
+            Request request = new Request(RequestType.REMOVE, new Item(wordField.getText()));
+            sendRequest(out, request);
+
+        });
 
         // Layout components
         JPanel searchPanel = new JPanel(new FlowLayout());

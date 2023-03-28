@@ -10,18 +10,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- *
  * @author Gaoyuan Ou(1301025)
  */
 public class TCPInteractiveServer extends TCPInteractiveClient {
     public static void main(String[] args) {
 
-        try{
+        try {
             Item[] readValue = Util.mapper.readValue(new File("dictionary.json"), Item[].class);
             Dictionary.items = new ArrayList<>(Arrays.asList(readValue));
             System.out.println("dictionary loaded!");
             System.out.println(Dictionary.items);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         ServerSocket listeningSocket = null;
@@ -29,46 +28,32 @@ public class TCPInteractiveServer extends TCPInteractiveClient {
         try {
             //Create a server socket listening on port 4444
             listeningSocket = new ServerSocket(4444);
-            while (true)
-            {
+            while (true) {
                 clientSocket = listeningSocket.accept(); //This method will block until a connection request is received
                 Dictionary dictionary = new Dictionary(clientSocket);
                 dictionary.start();
-                try
-                {
+                try {
                     FileWriter writer = new FileWriter("dictionary.json");
                     String dictionaryJSON = Util.mapper.writeValueAsString(Dictionary.items);
                     writer.write(dictionaryJSON);
                     writer.close();
                     System.out.println("new JSON written");
 
-                }
-                catch(SocketException e)
-                {
+                } catch (SocketException e) {
                     System.out.println("closed...");
                 }
             }
-        }
-        catch (SocketException ex)
-        {
+        } catch (SocketException ex) {
             ex.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("here");
             e.printStackTrace();
-        }
-        finally
-        {
-            if(listeningSocket != null)
-            {
-                try
-                {
+        } finally {
+            if (listeningSocket != null) {
+                try {
 // close the server socket
                     listeningSocket.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
