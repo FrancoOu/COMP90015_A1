@@ -9,6 +9,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import java.lang.System;
+
 /**
  * @author Gaoyuan Ou(1301025)
  */
@@ -21,7 +23,8 @@ public class TCPInteractiveServer extends TCPInteractiveClient {
             System.out.println("dictionary loaded!");
             System.out.println(Dictionary.items);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("cannot load the dictionary file");
+            System.exit(1);
         }
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
@@ -29,19 +32,12 @@ public class TCPInteractiveServer extends TCPInteractiveClient {
             //Create a server socket listening on port 4444
             listeningSocket = new ServerSocket(4444);
             while (true) {
-                clientSocket = listeningSocket.accept(); //This method will block until a connection request is received
-                Dictionary dictionary = new Dictionary(clientSocket);
-                dictionary.start();
-                try {
-                    FileWriter writer = new FileWriter("dictionary.json");
-                    String dictionaryJSON = Util.mapper.writeValueAsString(Dictionary.items);
-                    writer.write(dictionaryJSON);
-                    writer.close();
-                    System.out.println("new JSON written");
+                    clientSocket = listeningSocket.accept();//This method will block until a connection request is received
+                    System.out.println("new client connected");
 
-                } catch (SocketException e) {
-                    System.out.println("closed...");
-                }
+                    // Do something while the client socket is open
+                    Dictionary dictionary = new Dictionary(clientSocket);
+                    dictionary.start();
             }
         } catch (SocketException ex) {
             ex.printStackTrace();

@@ -77,6 +77,8 @@ public class Dictionary extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+                System.out.println("client " + this.getId()+" disconnected");
         }
     }
 
