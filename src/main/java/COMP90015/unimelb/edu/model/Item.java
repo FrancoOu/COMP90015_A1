@@ -3,7 +3,7 @@ package COMP90015.unimelb.edu.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Object to store the information of a dictionary item
+ * Class to store the information of a dictionary item
  *
  * @author Gaoyuan Ou(1301025)
  */

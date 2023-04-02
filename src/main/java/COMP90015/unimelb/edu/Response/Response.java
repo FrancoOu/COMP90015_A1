@@ -2,6 +2,9 @@ package COMP90015.unimelb.edu.Response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @author Gaoyuan Ou(1301025)
+ */
 public class Response {
 
     private String message;

@@ -4,6 +4,7 @@ package COMP90015.unimelb.edu.UI;
 import COMP90015.unimelb.edu.Request.Request;
 import COMP90015.unimelb.edu.Request.RequestType;
 import COMP90015.unimelb.edu.Response.Response;
+import COMP90015.unimelb.edu.Response.ResponseStatus;
 import COMP90015.unimelb.edu.Util;
 import COMP90015.unimelb.edu.model.Item;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,6 +54,8 @@ public class ClientUI extends JFrame {
         searchButton.addActionListener(e -> {
             Request request = new Request(RequestType.SEARCH, new Item(searchField.getText()));
             sendRequest(out, request);
+
+            searchField.setText("");
         });
 
         // Create word label and text field
@@ -73,6 +76,10 @@ public class ClientUI extends JFrame {
         addButton.addActionListener(e -> {
             Request request = new Request(RequestType.ADD, new Item(wordField.getText(), meaningField.getText()));
             sendRequest(out, request);
+
+            wordField.setText("");
+            meaningField.setText("");
+
         });
 
         // Create update button and listener
@@ -81,13 +88,22 @@ public class ClientUI extends JFrame {
             Request request = new Request(RequestType.UPDATE, new Item(wordField.getText(), meaningField.getText()));
             sendRequest(out, request);
 
+            wordField.setText("");
+            meaningField.setText("");
         });
 
         // Create update button and listener
         deleteButton = new JButton("Delete");
         deleteButton.addActionListener(e -> {
-            Request request = new Request(RequestType.REMOVE, new Item(wordField.getText()));
-            sendRequest(out, request);
+
+            int i  = JOptionPane.showOptionDialog(null, "Are you sure you want to delete this word?", "Confirmation",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (i == 0) {
+                Request request = new Request(RequestType.REMOVE, new Item(wordField.getText()));
+                sendRequest(out, request);
+                wordField.setText("");
+                meaningField.setText("");
+            }
 
         });
 
@@ -119,11 +135,14 @@ public class ClientUI extends JFrame {
 
 
         // Create a window listener
-        addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosed(WindowEvent e) {
+            public void windowClosing(WindowEvent e) {
                 try {
+                    System.out.println("closed");
                     socket.close();
+
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -154,10 +173,14 @@ public class ClientUI extends JFrame {
             while (!socket.isClosed()) {
                 String serverResponseStr = null;
                 if ((serverResponseStr = in.readLine()) != null) {
-
                     System.out.println(serverResponseStr);
                     Response serverResponse = Util.mapper.readValue(serverResponseStr, Response.class);
-                    resultArea.setText(serverResponse.getMessage());
+                    if (serverResponse.getStatus() == ResponseStatus.NOTFOUND || serverResponse.getStatus() == ResponseStatus.FAIL){
+                        JOptionPane.showMessageDialog(this, serverResponse.getMessage());
+                    }
+                    else {
+                        resultArea.setText(serverResponse.getMessage());
+                    }
                 }
             }
         } catch (IOException e) {

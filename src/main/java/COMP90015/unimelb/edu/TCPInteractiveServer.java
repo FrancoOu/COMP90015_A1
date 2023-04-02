@@ -17,20 +17,39 @@ import java.lang.System;
 public class TCPInteractiveServer extends TCPInteractiveClient {
     public static void main(String[] args) {
 
+        int port = 0;
+        String fileName = null;
+
+        if (args.length == 2){
+            try {
+                port = Integer.parseInt(args[0]);
+                fileName= args[1];
+            }catch (NumberFormatException e){
+                System.out.println("please enter a valid port number");
+                System.exit(1);
+            }
+        }
+        else {
+            System.out.println("please give the port number and file name as arguments.\n" +
+                    "for example:\n"+
+                    " java –jar DictionaryServer.jar <port> <dictionary-file> ");
+            System.exit(1);
+        }
+
         try {
-            Item[] readValue = Util.mapper.readValue(new File("dictionary.json"), Item[].class);
+            Item[] readValue = Util.mapper.readValue(new File(fileName), Item[].class);
             Dictionary.items = new ArrayList<>(Arrays.asList(readValue));
             System.out.println("dictionary loaded!");
             System.out.println(Dictionary.items);
         } catch (IOException e) {
-            System.out.println("cannot load the dictionary file");
+            System.out.println("cannot find the dictionary file");
             System.exit(1);
         }
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
         try {
             //Create a server socket listening on port 4444
-            listeningSocket = new ServerSocket(4444);
+            listeningSocket = new ServerSocket(port);
             while (true) {
                     clientSocket = listeningSocket.accept();//This method will block until a connection request is received
                     System.out.println("new client connected");

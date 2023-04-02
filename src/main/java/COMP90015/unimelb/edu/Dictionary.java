@@ -89,10 +89,10 @@ public class Dictionary extends Thread {
         if (!wordExist(item)) {
             items.add(item);
             saveDictionary();
-            message = "word added!";
+            message = Util.ADDED;
             responseStatus = ResponseStatus.SUCCESS;
         } else {
-            message = "word already existed";
+            message = Util.EXISTED;
             responseStatus = ResponseStatus.FAIL;
         }
         return new Response(message, responseStatus);
@@ -108,7 +108,7 @@ public class Dictionary extends Thread {
             responseStatus = ResponseStatus.SUCCESS;
         } catch (NoSuchElementException e) {
             System.out.println("no word");
-            message = "no such word";
+            message = Util.NOT_FOUND;
             responseStatus = ResponseStatus.NOTFOUND;
 
         }
@@ -120,12 +120,11 @@ public class Dictionary extends Thread {
         String message;
         ResponseStatus responseStatus;
         if (!wordExist(new Item(word))) {
-            System.out.println("no word to remove");
-            message = "no such word";
+            message = Util.NOT_FOUND;
             responseStatus = ResponseStatus.NOTFOUND;
         } else {
             items.removeIf(item -> item.getWord().equalsIgnoreCase(word));
-            message = "word removed!";
+            message = Util.REMOVED;
             responseStatus = ResponseStatus.SUCCESS;
             saveDictionary();
 
@@ -142,10 +141,10 @@ public class Dictionary extends Thread {
             itemToUpdate.setMeaning(meaning);
             saveDictionary();
             message = "update successful";
-            responseStatus = ResponseStatus.SUCCESS;
+            responseStatus = ResponseStatus.UPDATE_SUCCESS;
             saveDictionary();
         } else {
-            message = "no such word";
+            message = Util.NOT_FOUND;
             responseStatus = ResponseStatus.NOTFOUND;
         }
         return new Response(message, responseStatus);
